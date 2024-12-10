@@ -2,7 +2,7 @@ import createChatDelegator from "./ChatDelegator";
 import { isLoggedIn, logout, ofRandom } from "./Util";
 
 const createChatAgent = () => {
-    const CS571_WITAI_ACCESS_TOKEN = ""; // Put your CLIENT access token here.
+    const CS571_WITAI_ACCESS_TOKEN = "JIHS27XMGB5OURTUQTD5CFN446YINVWL"; // Put your CLIENT access token here.
 
     const delegator = createChatDelegator();
 
@@ -34,8 +34,16 @@ const createChatAgent = () => {
         const numComments = hasSpecifiedNumber ? promptData.entities["wit$number:number"][0].value : 1;
 
         // TODO Get the comments from `https://cs571api.cs.wisc.edu/rest/f24/ice/comments?num=${numComments}`
+        const res = await fetch(`https://cs571api.cs.wisc.edu/rest/f24/ice/comments?num=${numComments}`, {
+            headers: {
+                "X-CS571-ID": CS571.getBadgerId()
+            }
+        }); 
+        const data = await res.json();
 
-        return "I should get the comments!";
+        //console.log(data);
+
+        return data.map(d => `${d.comment} was posted by ${d.author}`);
     }
 
     const handleLogin = async (promptData) => {
